@@ -6,7 +6,7 @@ import Pill from "@/components/Pill";
 import PlatformIcon, { PLATFORMS } from "@/components/PlatformIcon";
 import { Plus, MagnifyingGlass, ArrowUpRight, Lightning, PencilSimple, Trash } from "@phosphor-icons/react";
 import { toast } from "sonner";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
 
 const EMPTY_IMG = "https://images.unsplash.com/photo-1659738943702-a22ddb8f87f1?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NTZ8MHwxfHNlYXJjaHwzfHxkYXJrJTIwYWJzdHJhY3QlMjB0ZXh0dXJlJTIwZ29sZHxlbnwwfHx8fDE3NzcxMTQxODh8MA&ixlib=rb-4.1.0&q=85";
 
@@ -43,6 +43,7 @@ function VaultForm({ open, onClose, onSaved, categories, editing }) {
             <DialogContent className="bg-ink-surface border border-white/[0.08] max-w-xl">
                 <DialogHeader>
                     <DialogTitle className="font-display text-2xl tracking-tight">{editing ? "Edit item" : "Save to Vault"}</DialogTitle>
+                    <DialogDescription className="sr-only">Save a piece of content to your vault with a title, URL, platform, and category.</DialogDescription>
                 </DialogHeader>
                 <div className="space-y-4">
                     <div>
@@ -109,6 +110,7 @@ function MoveToActionDialog({ open, onClose, onMoved, item }) {
             <DialogContent className="bg-ink-surface border border-white/[0.08] max-w-md">
                 <DialogHeader>
                     <DialogTitle className="font-display text-2xl tracking-tight">Move to Action</DialogTitle>
+                    <DialogDescription className="sr-only">Convert this saved item into an action card with a type and deadline.</DialogDescription>
                 </DialogHeader>
                 <div className="space-y-4">
                     <div className="text-sm text-white/60">{item?.title}</div>

@@ -7,7 +7,7 @@ import logging
 import uuid
 import bcrypt
 import jwt
-import requests as http_requests
+import httpx
 from pathlib import Path
 from pydantic import BaseModel, Field, EmailStr
 from typing import List, Optional, Literal
@@ -203,11 +203,11 @@ async def login(payload: LoginRequest, response: Response):
 async def google_session(payload: GoogleSessionRequest, response: Response):
     """Exchange Emergent session_id for our session_token."""
     try:
-        r = http_requests.get(
-            "https://demobackend.emergentagent.com/auth/v1/env/oauth/session-data",
-            headers={"X-Session-ID": payload.session_id},
-            timeout=10,
-        )
+        async with httpx.AsyncClient(timeout=10.0) as http:
+            r = await http.get(
+                "https://demobackend.emergentagent.com/auth/v1/env/oauth/session-data",
+                headers={"X-Session-ID": payload.session_id},
+            )
     except Exception as e:
         raise HTTPException(status_code=502, detail=f"Auth provider unreachable: {e}")
     if r.status_code != 200:
@@ -395,6 +395,12 @@ async def delete_category(cat_id: str, user: User = Depends(get_current_user)):
     res = await db.categories.delete_one({"id": cat_id, "user_id": user.user_id})
     if res.deleted_count == 0:
         raise HTTPException(404, "Category not found")
+    # Cascade-clear category_id on all referencing resources
+    for collection in (db.creators, db.vault, db.prompts, db.notes):
+        await collection.update_many(
+            {"user_id": user.user_id, "category_id": cat_id},
+            {"$set": {"category_id": None}},
+        )
     return {"ok": True}
 
 

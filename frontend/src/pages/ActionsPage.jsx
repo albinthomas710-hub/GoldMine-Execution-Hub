@@ -5,7 +5,7 @@ import EmptyState from "@/components/EmptyState";
 import Pill from "@/components/Pill";
 import { Plus, ArrowUpRight, Trash, PencilSimple, Lightning, CalendarBlank, MagnifyingGlass } from "@phosphor-icons/react";
 import { toast } from "sonner";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
 
 const EMPTY_IMG = "https://images.pexels.com/photos/21031387/pexels-photo-21031387.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940";
 
@@ -55,6 +55,7 @@ function ActionForm({ open, onClose, onSaved, editing }) {
             <DialogContent className="bg-ink-surface border border-white/[0.08] max-w-lg">
                 <DialogHeader>
                     <DialogTitle className="font-display text-2xl tracking-tight">{editing ? "Edit action" : "New action"}</DialogTitle>
+                    <DialogDescription className="sr-only">Define an action card with type, deadline, and status.</DialogDescription>
                 </DialogHeader>
                 <div className="space-y-4">
                     <input data-testid="action-title-input" className="input-luxury w-full" placeholder="What needs doing?" value={title} onChange={(e) => setTitle(e.target.value)} />

@@ -6,7 +6,7 @@ import Pill from "@/components/Pill";
 import PlatformIcon, { PLATFORMS } from "@/components/PlatformIcon";
 import { Plus, MagnifyingGlass, ArrowUpRight, PencilSimple, Trash, X } from "@phosphor-icons/react";
 import { toast } from "sonner";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
 
 const EMPTY_IMG = "https://images.unsplash.com/photo-1659738943702-a22ddb8f87f1?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NTZ8MHwxfHNlYXJjaHwzfHxkYXJrJTIwYWJzdHJhY3QlMjB0ZXh0dXJlJTIwZ29sZHxlbnwwfHx8fDE3NzcxMTQxODh8MA&ixlib=rb-4.1.0&q=85";
 
@@ -56,6 +56,7 @@ function CreatorForm({ open, onClose, onSaved, categories, editing }) {
                     <DialogTitle className="font-display text-2xl tracking-tight">
                         {editing ? "Edit creator" : "Add a creator"}
                     </DialogTitle>
+                    <DialogDescription className="sr-only">Add a curated creator with bio, category, and platform links.</DialogDescription>
                 </DialogHeader>
                 <div className="space-y-4">
                     <div>
@@ -121,6 +122,7 @@ function CategoryForm({ open, onClose, onSaved }) {
             <DialogContent className="bg-ink-surface border border-white/[0.08] max-w-md">
                 <DialogHeader>
                     <DialogTitle className="font-display text-2xl tracking-tight">New category</DialogTitle>
+                    <DialogDescription className="sr-only">Create a new category to organize your creators and content.</DialogDescription>
                 </DialogHeader>
                 <input data-testid="category-name-input" className="input-luxury w-full" value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Claude Code" />
                 <DialogFooter>
