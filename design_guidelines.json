@@ -1,0 +1,79 @@
+{
+  "theme": "dark",
+  "archetype": "5 - Jewel & Luxury combined with 4 - Swiss & High-Contrast for productivity clarity",
+  "mood": "distraction-free, clean, premium, editorial, private executive workspace",
+  "colors": {
+    "background_base": "#0A0A0A",
+    "background_surface": "#121212",
+    "background_elevated": "#1A1A1A",
+    "primary_accent": "#D4AF37",
+    "primary_accent_hover": "#E5C07B",
+    "text_primary": "#EDEDED",
+    "text_secondary": "#8A8A8A",
+    "text_tertiary": "#5C5C5C",
+    "border_subtle": "rgba(255, 255, 255, 0.06)",
+    "border_gold": "rgba(212, 175, 55, 0.2)",
+    "success": "#2E8B57",
+    "warning": "#B8860B",
+    "danger": "#8B0000"
+  },
+  "typography": {
+    "headings_font": "Cabinet Grotesk, sans-serif",
+    "body_font": "Manrope, sans-serif",
+    "mono_font": "JetBrains Mono, monospace",
+    "rules": {
+      "headings": "Tight tracking (tracking-tight), never purely centered unless explicit structural need. No bold by default—use font-light or font-medium for elegance.",
+      "body": "Loose line height (leading-relaxed) for readability.",
+      "labels": "Uppercase, wide spacing (tracking-[0.2em]), tiny text for overlines and tags.",
+      "hierarchy": "Use fluid scaling. H1 max text-5xl. Use sharp scale drops between H1 and body."
+    }
+  },
+  "layout": {
+    "container": "Max width 1440px, generous padding (p-8 to p-12).",
+    "sidebar": "Fixed width 280px, border-r border-white/5, very subtle. Optical alignment for icons.",
+    "cards": "Cardless or flat solid with 1px border-white/5. No soft drop shadows. Hover states: -translate-y-1, border-white/10.",
+    "spacing": "Use 2x normal spacing (e.g., gap-8 instead of gap-4) to create a luxurious, uncrowded feel.",
+    "dashboard_grid": "Control Room Grid: strict hierarchy, dense data but breathable inside cards. Use bento-style spans."
+  },
+  "components": {
+    "buttons": "Sharp corners (rounded-none or max rounded-md). Primary uses the gold accent, but sparsely. Default to ghost or outline buttons with subtle gold hover.",
+    "inputs": "Flat, bg-[#121212], full 1px border-white/10. focus:border-[#D4AF37].",
+    "dialogs": "Backdrop blur, pure black overlay (bg-black/80), sharp modal box with 1px border.",
+    "pills_tags": "Small, uppercase, strict sans. border border-white/10 text-xs text-text_secondary. Gold accent border for active/selected state."
+  },
+  "motion": {
+    "hover": "Transition transform 0.2s ease, opacity 0.2s ease",
+    "page_transitions": "Subtle fade and slight upward drift on load."
+  },
+  "images": {
+    "auth_background": {
+      "url": "https://images.unsplash.com/photo-1647101734210-ff5d79813069?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NTZ8MHwxfHNlYXJjaHwyfHxkYXJrJTIwYWJzdHJhY3QlMjB0ZXh0dXJlJTIwZ29sZHxlbnwwfHx8fDE3NzcxMTQxODh8MA&ixlib=rb-4.1.0&q=85",
+      "description": "Black background with abstract gold swirls, used for the sign in/sign up page."
+    },
+    "empty_state_vault": {
+      "url": "https://images.unsplash.com/photo-1659738943702-a22ddb8f87f1?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NTZ8MHwxfHNlYXJjaHwzfHxkYXJrJTIwYWJzdHJhY3QlMjB0ZXh0dXJlJTIwZ29sZHxlbnwwfHx8fDE3NzcxMTQxODh8MA&ixlib=rb-4.1.0&q=85",
+      "description": "Abstract gold and black circle texture, used for empty states in the content vault."
+    },
+    "empty_state_action": {
+      "url": "https://images.pexels.com/photos/21031387/pexels-photo-21031387.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "description": "Intricate golden wave patterns creating a luxurious abstract art piece, used for empty action loops."
+    }
+  },
+  "icons": "Use @phosphor-icons/react (light or regular weight). They provide the premium, fine-line look suitable for this luxury aesthetic.",
+  "testing": {
+    "rules": "All interactive elements MUST have data-testid attributes (e.g., data-testid='move-to-action-btn', data-testid='sidebar-nav-vault', data-testid='create-note-button')."
+  },
+  "instructions_to_main_agent": [
+    "Load Cabinet Grotesk via Fontshare CDN: <link href=\"https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@800,500,700,400,300&display=swap\" rel=\"stylesheet\"> in index.html.",
+    "Install Google Font: Manrope for body text.",
+    "Install @phosphor-icons/react for icons.",
+    "Use pure HTML + Tailwind for structural layouts to ensure precision; use Shadcn for complex forms/dialogs but strip Vercel-look borders and shadows.",
+    "Force dark mode via <html class='dark'> or standard Tailwind strategy, as light mode is completely discarded for this project.",
+    "In the Action Loop, avoid highly saturated colorful status chips. Use monochrome chips with subtle text colors and a thin gold border for 'In Progress'.",
+    "In the Gold Sources Directory, use Phosphor's brand icons (XLogo, YoutubeLogo, LinkedinLogo).",
+    "The Dashboard Accountability Score should be MASSIVE text (text-6xl or text-8xl) in Cabinet Grotesk, centered, purely typographical with no circular progress or decorative charts—just the number.",
+    "Never use pure black background for cards or pure #000000; stick to the defined palette of #0A0A0A (Base) and #121212 (Surface).",
+    "Use sonner for toasts, but override styles to be dark background (#1A1A1A) with a thin border-white/5.",
+    "Start every section with an empty state layout utilizing the provided images in a subtle, desaturated manner (opacity-50 or mix-blend-screen)."
+  ]
+}
