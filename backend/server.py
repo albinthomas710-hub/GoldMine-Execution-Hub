@@ -404,6 +404,48 @@ async def delete_category(cat_id: str, user: User = Depends(get_current_user)):
     return {"ok": True}
 
 
+# ---------- Custom Platforms ----------
+class PlatformIn(BaseModel):
+    name: str
+
+
+class PlatformOut(PlatformIn):
+    id: str
+    created_at: str
+
+
+@api_router.get("/platforms", response_model=List[PlatformOut])
+async def list_platforms(user: User = Depends(get_current_user)):
+    docs = await db.user_platforms.find({"user_id": user.user_id}, {"_id": 0}).sort("created_at", 1).to_list(200)
+    return [PlatformOut(**{k: v for k, v in d.items() if k != "user_id"}) for d in docs]
+
+
+@api_router.post("/platforms", response_model=PlatformOut)
+async def create_platform(payload: PlatformIn, user: User = Depends(get_current_user)):
+    name = payload.name.strip()
+    if not name:
+        raise HTTPException(400, "Name required")
+    existing = await db.user_platforms.find_one({"user_id": user.user_id, "name": name}, {"_id": 0})
+    if existing:
+        return PlatformOut(**{k: v for k, v in existing.items() if k != "user_id"})
+    doc = {
+        "id": uuid.uuid4().hex,
+        "user_id": user.user_id,
+        "name": name,
+        "created_at": now_utc().isoformat(),
+    }
+    await db.user_platforms.insert_one(doc)
+    return PlatformOut(**{k: v for k, v in doc.items() if k != "user_id"})
+
+
+@api_router.delete("/platforms/{platform_id}")
+async def delete_platform(platform_id: str, user: User = Depends(get_current_user)):
+    res = await db.user_platforms.delete_one({"id": platform_id, "user_id": user.user_id})
+    if res.deleted_count == 0:
+        raise HTTPException(404, "Platform not found")
+    return {"ok": True}
+
+
 # ---------- Creators ----------
 @api_router.get("/creators", response_model=List[CreatorOut])
 async def list_creators(user: User = Depends(get_current_user)):
@@ -715,7 +757,7 @@ app.include_router(api_router)
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
-    allow_origins=os.environ.get('CORS_ORIGINS', '*').split(','),
+    allow_origin_regex=r"https?://(localhost(:\d+)?|.*\.emergentagent\.com|.*\.emergent\.host)",
     allow_methods=["*"],
     allow_headers=["*"],
 )

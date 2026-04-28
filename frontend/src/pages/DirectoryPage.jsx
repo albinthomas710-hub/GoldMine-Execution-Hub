@@ -4,13 +4,15 @@ import SectionHeader from "@/components/SectionHeader";
 import EmptyState from "@/components/EmptyState";
 import Pill from "@/components/Pill";
 import PlatformIcon, { PLATFORMS } from "@/components/PlatformIcon";
+import PlatformFilterBar from "@/components/PlatformFilterBar";
+import { usePlatforms } from "@/hooks/usePlatforms";
 import { Plus, MagnifyingGlass, ArrowUpRight, PencilSimple, Trash, X } from "@phosphor-icons/react";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
 
 const EMPTY_IMG = "https://images.unsplash.com/photo-1659738943702-a22ddb8f87f1?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NTZ8MHwxfHNlYXJjaHwzfHxkYXJrJTIwYWJzdHJhY3QlMjB0ZXh0dXJlJTIwZ29sZHxlbnwwfHx8fDE3NzcxMTQxODh8MA&ixlib=rb-4.1.0&q=85";
 
-function CreatorForm({ open, onClose, onSaved, categories, editing }) {
+function CreatorForm({ open, onClose, onSaved, categories, editing, platformNames }) {
     const [name, setName] = useState("");
     const [bio, setBio] = useState("");
     const [categoryId, setCategoryId] = useState("");
@@ -83,7 +85,7 @@ function CreatorForm({ open, onClose, onSaved, categories, editing }) {
                             {links.map((l, i) => (
                                 <div key={i} className="flex gap-2">
                                     <select className="input-luxury w-40" value={l.platform} onChange={(e) => updateLink(i, "platform", e.target.value)}>
-                                        {PLATFORMS.map((p) => <option key={p} value={p}>{p}</option>)}
+                                        {platformNames.map((p) => <option key={p} value={p}>{p}</option>)}
                                     </select>
                                     <input className="input-luxury flex-1" placeholder="https://" value={l.url} onChange={(e) => updateLink(i, "url", e.target.value)} />
                                     <button type="button" onClick={() => removeLink(i)} className="px-2 text-white/40 hover:text-gold">
@@ -143,6 +145,7 @@ export default function DirectoryPage() {
     const [showCreatorForm, setShowCreatorForm] = useState(false);
     const [showCategoryForm, setShowCategoryForm] = useState(false);
     const [editing, setEditing] = useState(null);
+    const platforms = usePlatforms();
 
     const load = async () => {
         const [c, cat] = await Promise.all([api.get("/creators"), api.get("/categories")]);
@@ -231,14 +234,14 @@ export default function DirectoryPage() {
             {/* Platforms */}
             <div className="mb-10">
                 <div className="tag-overline mb-3">Platforms</div>
-                <div className="flex flex-wrap gap-2">
-                    <Pill active={activePlatform === "all"} onClick={() => setActivePlatform("all")} testid="platform-pill-all">All</Pill>
-                    {(platformsInScope.length ? platformsInScope : PLATFORMS.slice(0, 6)).map((p) => (
-                        <Pill key={p} active={activePlatform === p} onClick={() => setActivePlatform(p)} testid={`platform-pill-${p}`}>
-                            <span className="inline-flex items-center gap-1.5"><PlatformIcon platform={p} size={11} /> {p}</span>
-                        </Pill>
-                    ))}
-                </div>
+                <PlatformFilterBar
+                    options={platforms.names}
+                    active={activePlatform}
+                    onChange={setActivePlatform}
+                    custom={platforms.custom}
+                    onAdd={platforms.add}
+                    onRemoveCustom={platforms.remove}
+                />
             </div>
 
             {/* List */}
@@ -303,6 +306,7 @@ export default function DirectoryPage() {
                 onSaved={load}
                 categories={categories}
                 editing={editing}
+                platformNames={platforms.names}
             />
             <CategoryForm open={showCategoryForm} onClose={() => setShowCategoryForm(false)} onSaved={load} />
         </div>

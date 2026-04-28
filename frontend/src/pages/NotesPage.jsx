@@ -4,6 +4,8 @@ import SectionHeader from "@/components/SectionHeader";
 import EmptyState from "@/components/EmptyState";
 import Pill from "@/components/Pill";
 import PlatformIcon, { PLATFORMS } from "@/components/PlatformIcon";
+import PlatformFilterBar from "@/components/PlatformFilterBar";
+import { usePlatforms } from "@/hooks/usePlatforms";
 import { Plus, MagnifyingGlass, Trash, PencilSimple, ArrowUpRight, TextB, TextItalic, ListBullets, ListNumbers } from "@phosphor-icons/react";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
@@ -38,7 +40,7 @@ function RichTextEditor({ value, onChange, testid }) {
     );
 }
 
-function NoteForm({ open, onClose, onSaved, categories, editing }) {
+function NoteForm({ open, onClose, onSaved, categories, editing, platformNames }) {
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
     const [categoryId, setCategoryId] = useState("");
@@ -79,7 +81,7 @@ function NoteForm({ open, onClose, onSaved, categories, editing }) {
                     <div className="grid grid-cols-2 gap-3">
                         <select className="input-luxury w-full" value={platform} onChange={(e) => setPlatform(e.target.value)}>
                             <option value="">Source platform (optional)</option>
-                            {PLATFORMS.map((p) => <option key={p}>{p}</option>)}
+                            {platformNames.map((p) => <option key={p}>{p}</option>)}
                         </select>
                         <select className="input-luxury w-full" value={categoryId} onChange={(e) => setCategoryId(e.target.value)}>
                             <option value="">— Uncategorized —</option>
@@ -105,6 +107,7 @@ export default function NotesPage() {
     const [search, setSearch] = useState("");
     const [showForm, setShowForm] = useState(false);
     const [editing, setEditing] = useState(null);
+    const platforms = usePlatforms();
 
     const load = async () => {
         const [n, c] = await Promise.all([api.get("/notes"), api.get("/categories")]);
@@ -112,7 +115,11 @@ export default function NotesPage() {
     };
     useEffect(() => { load(); }, []);
 
-    const platformsInScope = useMemo(() => Array.from(new Set(notes.map((n) => n.source_platform).filter(Boolean))), [notes]);
+    const platformsInScope = useMemo(() => {
+        const set = new Set(notes.map((n) => n.source_platform).filter(Boolean));
+        platforms.names.forEach((p) => set.add(p));
+        return Array.from(set);
+    }, [notes, platforms.names]);
 
     const filtered = useMemo(() => notes.filter((n) => {
         if (activeCategory !== "all" && n.category_id !== activeCategory) return false;
@@ -152,13 +159,16 @@ export default function NotesPage() {
                 <Pill active={activeCategory === "all"} onClick={() => setActiveCategory("all")}>All categories</Pill>
                 {categories.map((c) => <Pill key={c.id} active={activeCategory === c.id} onClick={() => setActiveCategory(c.id)}>{c.name}</Pill>)}
             </div>
-            <div className="mb-10 flex flex-wrap gap-2">
-                <Pill active={activePlatform === "all"} onClick={() => setActivePlatform("all")}>All platforms</Pill>
-                {platformsInScope.map((p) => (
-                    <Pill key={p} active={activePlatform === p} onClick={() => setActivePlatform(p)}>
-                        <span className="inline-flex items-center gap-1.5"><PlatformIcon platform={p} size={11} /> {p}</span>
-                    </Pill>
-                ))}
+            <div className="mb-10">
+                <div className="tag-overline mb-3">Platforms</div>
+                <PlatformFilterBar
+                    options={platformsInScope}
+                    active={activePlatform}
+                    onChange={setActivePlatform}
+                    custom={platforms.custom}
+                    onAdd={platforms.add}
+                    onRemoveCustom={platforms.remove}
+                />
             </div>
 
             {filtered.length === 0 ? (
@@ -200,7 +210,7 @@ export default function NotesPage() {
                 </div>
             )}
 
-            <NoteForm open={showForm} onClose={() => setShowForm(false)} onSaved={load} categories={categories} editing={editing} />
+            <NoteForm open={showForm} onClose={() => setShowForm(false)} onSaved={load} categories={categories} editing={editing} platformNames={platforms.names} />
         </div>
     );
 }
